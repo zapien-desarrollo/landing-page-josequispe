@@ -1,6 +1,8 @@
 (() => {
   'use strict';
 
+  const WHATSAPP = '5492617013574';
+
   /* ---------- Año en el footer ---------- */
   const year = document.getElementById('year');
   if (year) year.textContent = new Date().getFullYear();
@@ -15,17 +17,19 @@
   const toggle = document.querySelector('.nav__toggle');
   const menu = document.getElementById('nav-menu');
   if (toggle && menu) {
-    toggle.addEventListener('click', () => {
-      const open = menu.classList.toggle('is-open');
+    const setOpen = (open) => {
+      menu.classList.toggle('is-open', open);
       toggle.setAttribute('aria-expanded', String(open));
       toggle.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+    };
+    toggle.addEventListener('click', () => setOpen(!menu.classList.contains('is-open')));
+    menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menu.classList.contains('is-open')) {
+        setOpen(false);
+        toggle.focus();
+      }
     });
-    menu.querySelectorAll('a').forEach((a) =>
-      a.addEventListener('click', () => {
-        menu.classList.remove('is-open');
-        toggle.setAttribute('aria-expanded', 'false');
-      })
-    );
   }
 
   /* ---------- Link activo según sección visible ---------- */
@@ -43,43 +47,42 @@
           );
         });
       },
-      { rootMargin: '-45% 0px -45% 0px' }
+      { rootMargin: '-45% 0px -50% 0px' }
     );
     sections.forEach((s) => spy.observe(s));
   }
 
-  /* ---------- Reveal al entrar en viewport ---------- */
-  const reveals = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add('is-visible');
-            io.unobserve(e.target);
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
-    reveals.forEach((el) => io.observe(el));
-  } else {
-    reveals.forEach((el) => el.classList.add('is-visible'));
-  }
+  /* ---------- Formulario → mensaje de WhatsApp ---------- */
+  const form = document.getElementById('contact-form');
+  if (form) {
+    const error = document.getElementById('form-error');
+    const nombre = form.elements.nombre;
 
-  /* ---------- Texto rotativo de servicios ---------- */
-  const rotator = document.getElementById('rotator');
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (rotator && !reduced) {
-    const words = ['automatizaciones', 'páginas web', 'publicidad en Meta Ads', 'sistemas CRM'];
-    let i = 0;
-    setInterval(() => {
-      rotator.classList.add('is-out');
-      setTimeout(() => {
-        i = (i + 1) % words.length;
-        rotator.textContent = words[i];
-        rotator.classList.remove('is-out');
-      }, 300);
-    }, 2600);
+    nombre.addEventListener('input', () => {
+      nombre.removeAttribute('aria-invalid');
+      error.hidden = true;
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(
+        [...new FormData(form)].map(([k, v]) => [k, String(v).trim()])
+      );
+
+      if (!data.nombre) {
+        nombre.setAttribute('aria-invalid', 'true');
+        error.hidden = false;
+        nombre.focus();
+        return;
+      }
+
+      const lineas = [`Hola Jose, soy ${data.nombre}${data.negocio ? ` de ${data.negocio}` : ''}.`];
+      if (data.rubro) lineas.push(`Rubro: ${data.rubro}.`);
+      if (data.servicio) lineas.push(`Me interesa: ${data.servicio}.`);
+      if (data.mensaje) lineas.push('', data.mensaje);
+
+      const url = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(lineas.join('\n'))}`;
+      window.open(url, '_blank', 'noopener');
+    });
   }
 })();

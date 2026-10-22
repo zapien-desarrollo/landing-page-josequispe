@@ -1,7 +1,7 @@
 # Landing page · Jose Quispe
 
 Landing page de servicios de desarrollo de software para negocios
-(automatizaciones, páginas web, publicidad en Meta Ads y CRM).
+(páginas web, tiendas online, automatizaciones, CRM y publicidad en Meta Ads).
 
 ## Stack
 
@@ -26,7 +26,11 @@ Colores y tipografías en `design/branding.txt`. La referencia visual es
 
 ## Secciones
 
-- [x] Home
-- [ ] Servicios
-- [ ] Sectores
-- [ ] Contacto
+- [x] Hero
+- [x] Servicios
+- [x] Por qué trabajar conmigo
+- [x] Rubros (basado en `docs/rubros.md`)
+- [x] Cómo trabajo
+- [x] Preguntas frecuentes
+- [x] Contacto (formulario que arma el mensaje de WhatsApp)
+- [ ] Portfolio de demos por rubro
