@@ -21,8 +21,8 @@ npx serve .
 Colores y tipografías en `design/branding.txt`. La referencia visual es
 `design/tarjeta-presentacion.jpg`.
 
-> La tipografía de título *TT Ricordi Nobili* es comercial. Mientras no se
-> cargue con `@font-face`, se usa *Bodoni Moda* (Google Fonts) como sustituto.
+> En la web se usa *Montserrat* para todo, títulos incluidos. La serif de la
+> tarjeta (*TT Ricordi Nobili*) se descartó en la web por legibilidad.
 
 ## Secciones
 
