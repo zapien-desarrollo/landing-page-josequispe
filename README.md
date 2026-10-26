@@ -21,8 +21,10 @@ npx serve .
 Colores y tipografías en `design/branding.txt`. La referencia visual es
 `design/tarjeta-presentacion.jpg`.
 
-> En la web se usa *Montserrat* para todo, títulos incluidos. La serif de la
-> tarjeta (*TT Ricordi Nobili*) se descartó en la web por legibilidad.
+> La web comparte paleta y tipografía de títulos con las demos del portfolio
+> (verde `#1f3d36`, dorado `#c79a52`, fondo `#f8f6f2`, títulos en *DM Serif
+> Display*). El cuerpo sigue en *Montserrat*. La serif de la tarjeta
+> (*TT Ricordi Nobili*) se descartó en la web por legibilidad.
 
 ## Secciones
 
