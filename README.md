@@ -33,4 +33,4 @@ Colores y tipografías en `design/branding.txt`. La referencia visual es
 - [x] Cómo trabajo
 - [x] Preguntas frecuentes
 - [x] Contacto (formulario que arma el mensaje de WhatsApp)
-- [x] Ejemplos (demos por rubro: inmobiliaria y estudio contable)
+- [x] Ejemplos (demos por rubro: inmobiliaria, estudio contable y concesionaria)
