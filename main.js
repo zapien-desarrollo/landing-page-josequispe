@@ -93,6 +93,7 @@
       { label: 'Inmobiliaria', url: 'cerropropiedades.com.ar', msg: 'Hola, me interesa la casa con pileta en Chacras. ¿Sigue disponible?' },
       { label: 'Estudio contable', url: 'estudiocerro.com.ar', msg: 'Hola, quiero darme de alta en el monotributo. ¿Qué necesito?' },
       { label: 'Concesionaria', url: 'cerroautomotores.com.ar', msg: 'Hola, ¿me toman el Gol 2016 como parte de pago del Polo?' },
+      { label: 'Tienda online', url: 'adventure35.mitiendanube.com', msg: 'Hola, ¿la campera Cordón viene en talle M? ¿Cuánto tarda el envío a Córdoba?' },
     ];
     const screens = [...showcase.querySelectorAll('.browser__screen img')];
     const phones = [...showcase.querySelectorAll('.phone__screen img')];
