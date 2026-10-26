@@ -61,39 +61,45 @@
           </div>
         </div>
 
-        <div class="hero__visual load-in" aria-hidden="true">
-          <div class="mock">
-            <div class="mock__bar">
-              <span></span><span></span><span></span>
-              <p class="mock__url">tunegocio.com.ar</p>
-            </div>
-            <div class="mock__body">
-              <div class="mock__nav"><i></i><b></b><b></b><b></b></div>
-              <div class="mock__hero">
-                <b class="mock__h"></b>
-                <b class="mock__h mock__h--short"></b>
-                <b class="mock__p"></b>
-                <b class="mock__p mock__p--short"></b>
-                <i class="mock__btn"></i>
+        <div class="hero__visual load-in">
+          <!-- Vitrina con capturas reales de las demos; rota sola (ver main.js) -->
+          <div class="showcase" aria-hidden="true">
+            <div class="browser">
+              <div class="browser__bar">
+                <span></span><span></span><span></span>
+                <p class="browser__url" id="showcase-url">cerropropiedades.com.ar</p>
               </div>
-              <div class="mock__cards"><b></b><b></b><b></b></div>
+              <div class="browser__screen">
+                <img class="is-active" src="images/demo-inmobiliaria.webp" alt="" width="1200" height="700" fetchpriority="high" />
+                <img src="images/demo-estudio-contable.webp" alt="" width="1200" height="700" loading="lazy" />
+                <img src="images/demo-concesionaria.webp" alt="" width="1200" height="700" loading="lazy" />
+              </div>
+            </div>
+
+            <div class="phone">
+              <div class="phone__screen">
+                <img class="is-active" src="images/demo-inmobiliaria-movil.webp" alt="" width="390" height="780" />
+                <img src="images/demo-estudio-contable-movil.webp" alt="" width="390" height="780" loading="lazy" />
+                <img src="images/demo-concesionaria-movil.webp" alt="" width="390" height="780" loading="lazy" />
+              </div>
+            </div>
+
+            <div class="float-card float-card--chat">
+              <p class="float-card__label">
+                <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg>
+                Nueva consulta desde la web
+              </p>
+              <p class="float-card__msg" id="showcase-msg">Hola, me interesa la casa con pileta en Chacras. ¿Sigue disponible?</p>
             </div>
           </div>
 
-          <div class="float-card float-card--chat">
-            <p class="float-card__label">
-              <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg>
-              Nueva consulta desde tu web
-            </p>
-            <p class="float-card__msg">Hola! Quiero reservar una mesa para 4 hoy a las 21 h</p>
-          </div>
-
-          <div class="float-card float-card--auto">
-            <span class="float-card__check">✓</span>
-            <div>
-              <p class="float-card__title">Turno confirmado</p>
-              <p class="float-card__sub">Recordatorio enviado automáticamente</p>
+          <div class="showcase__caption">
+            <div class="showcase__dots" role="group" aria-label="Elegir demo">
+              <button type="button" class="is-active" aria-pressed="true" aria-label="Inmobiliaria"></button>
+              <button type="button" aria-pressed="false" aria-label="Estudio contable"></button>
+              <button type="button" aria-pressed="false" aria-label="Concesionaria"></button>
             </div>
+            <p>Demo: <b id="showcase-label">Inmobiliaria</b> · <a href="#ejemplos">Ver ejemplos</a></p>
           </div>
         </div>
       </div>

@@ -85,4 +85,48 @@
       window.open(url, '_blank', 'noopener');
     });
   }
+
+  /* ---------- Vitrina de demos del hero ---------- */
+  const showcase = document.querySelector('.showcase');
+  if (showcase) {
+    const DEMOS = [
+      { label: 'Inmobiliaria', url: 'cerropropiedades.com.ar', msg: 'Hola, me interesa la casa con pileta en Chacras. ¿Sigue disponible?' },
+      { label: 'Estudio contable', url: 'estudiocerro.com.ar', msg: 'Hola, quiero darme de alta en el monotributo. ¿Qué necesito?' },
+      { label: 'Concesionaria', url: 'cerroautomotores.com.ar', msg: 'Hola, ¿me toman el Gol 2016 como parte de pago del Polo?' },
+    ];
+    const screens = [...showcase.querySelectorAll('.browser__screen img')];
+    const phones = [...showcase.querySelectorAll('.phone__screen img')];
+    const dots = [...document.querySelectorAll('.showcase__dots button')];
+    const url = document.getElementById('showcase-url');
+    const msg = document.getElementById('showcase-msg');
+    const label = document.getElementById('showcase-label');
+    let current = 0;
+    let timer;
+
+    const show = (i) => {
+      current = i;
+      [screens, phones].forEach((imgs) => imgs.forEach((img, j) => img.classList.toggle('is-active', j === i)));
+      dots.forEach((d, j) => {
+        d.classList.toggle('is-active', j === i);
+        d.setAttribute('aria-pressed', String(j === i));
+      });
+      url.textContent = DEMOS[i].url;
+      label.textContent = DEMOS[i].label;
+      msg.classList.add('is-changing');
+      setTimeout(() => {
+        msg.textContent = DEMOS[i].msg;
+        msg.classList.remove('is-changing');
+      }, 300);
+    };
+
+    // Rota sola salvo que el usuario prefiera menos movimiento
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const start = () => {
+      if (reduce) return;
+      clearInterval(timer);
+      timer = setInterval(() => show((current + 1) % DEMOS.length), 5000);
+    };
+    dots.forEach((d, i) => d.addEventListener('click', () => { show(i); start(); }));
+    start();
+  }
 })();
