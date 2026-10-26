@@ -29,7 +29,6 @@ Colores y tipografías en `design/branding.txt`. La referencia visual es
 - [x] Hero
 - [x] Servicios
 - [x] Por qué trabajar conmigo
-- [x] Rubros (basado en `docs/rubros.md`)
 - [x] Cómo trabajo
 - [x] Preguntas frecuentes
 - [x] Contacto (formulario que arma el mensaje de WhatsApp)

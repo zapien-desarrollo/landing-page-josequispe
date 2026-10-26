@@ -438,8 +438,7 @@ p { margin: 0; }
   color: var(--color-gris);
 }
 .section--dark .section__lead { color: var(--color-sobre-oscuro-suave); }
-.section__lead a,
-.sectors__more a { color: var(--color-acento); font-weight: 600; }
+.section__lead a { color: var(--color-acento); font-weight: 600; }
 
 /* ---------- Servicios ---------- */
 .services {
@@ -545,31 +544,7 @@ p { margin: 0; }
 .feature h3 { font-size: 1.08rem; font-weight: 600; margin-bottom: 10px; }
 .feature p { font-size: 0.93rem; }
 
-/* ---------- Rubros ---------- */
-.sectors {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-.sector {
-  display: flex;
-  flex-direction: column;
-  padding: 30px 28px;
-  border-radius: var(--radius);
-  border: 1px solid var(--color-linea);
-  background: var(--color-superficie);
-  transition: border-color 0.3s, transform 0.35s var(--ease);
-}
-.sector:hover { border-color: var(--color-acento); transform: translateY(-3px); }
-.sector h3 {
-  font-family: var(--font-titulo);
-  font-weight: 700;
-  font-size: 1.15rem;
-  line-height: 1.3;
-  margin-bottom: 12px;
-}
-.sector p { font-size: 0.93rem; color: var(--color-gris); margin-bottom: 22px; }
-
+/* ---------- Etiquetas ---------- */
 .tags {
   list-style: none;
   margin: auto 0 0;
@@ -587,21 +562,6 @@ p { margin: 0; }
   font-weight: 500;
   color: var(--color-tinta);
 }
-
-.sectors__more {
-  margin-top: 36px;
-  text-align: center;
-  color: var(--color-gris);
-}
-
-.sector__demo {
-  margin-top: 18px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-acento);
-  text-decoration: none;
-}
-.sector__demo:hover { text-decoration: underline; }
 
 /* ---------- Ejemplos ---------- */
 .demos { display: grid; gap: 28px; }
@@ -893,8 +853,7 @@ p { margin: 0; }
 @media (max-width: 940px) {
   .hero__inner { grid-template-columns: 1fr; }
   .hero__visual { max-width: 520px; width: 100%; margin-inline: auto; }
-  .services,
-  .sectors { grid-template-columns: repeat(2, 1fr); }
+  .services { grid-template-columns: repeat(2, 1fr); }
   .features { grid-template-columns: repeat(2, 1fr); }
   .trust { grid-template-columns: repeat(2, 1fr); }
   .faq-layout,
@@ -925,7 +884,6 @@ p { margin: 0; }
 
 @media (max-width: 640px) {
   .services,
-  .sectors,
   .features,
   .steps,
   .trust,
