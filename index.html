@@ -250,9 +250,12 @@
             los formularios como lo haría uno de tus clientes.
           </p>
         </header>
+      </div>
 
-        <div class="demos">
-          <article class="demo reveal">
+      <!-- Carrusel en cilindro: scroll horizontal nativo; main.js curva las cards según su distancia al centro -->
+      <div class="demos reveal">
+        <div class="demos__track" tabindex="0" role="region" aria-roledescription="carrusel" aria-label="Demos por rubro">
+          <article class="demo">
             <a class="demo__media" href="https://landing-page-inmobiliaria-zeta.vercel.app" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
               <img src="images/demo-inmobiliaria.webp" alt="" width="1200" height="700" loading="lazy" decoding="async" />
             </a>
@@ -268,7 +271,7 @@
             </div>
           </article>
 
-          <article class="demo reveal">
+          <article class="demo">
             <a class="demo__media" href="https://landing-page-estudiocontable.vercel.app" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
               <img src="images/demo-estudio-contable.webp" alt="" width="1200" height="700" loading="lazy" decoding="async" />
             </a>
@@ -284,7 +287,7 @@
             </div>
           </article>
 
-          <article class="demo reveal">
+          <article class="demo">
             <a class="demo__media" href="https://landing-page-concesionaria.vercel.app" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
               <img src="images/demo-concesionaria.webp" alt="" width="1200" height="700" loading="lazy" decoding="async" />
             </a>
@@ -300,7 +303,7 @@
             </div>
           </article>
 
-          <article class="demo reveal">
+          <article class="demo">
             <a class="demo__media" href="https://adventure35.mitiendanube.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
               <img src="images/demo-tienda-online.webp" alt="" width="1200" height="700" loading="lazy" decoding="async" />
             </a>
@@ -315,6 +318,21 @@
               </div>
             </div>
           </article>
+        </div>
+
+        <div class="demos__nav">
+          <button type="button" class="demos__arrow" data-dir="-1" aria-label="Demo anterior">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+          </button>
+          <div class="demos__dots" role="group" aria-label="Elegir demo">
+            <button type="button" class="is-active" aria-pressed="true" aria-label="Inmobiliaria"></button>
+            <button type="button" aria-pressed="false" aria-label="Estudio contable"></button>
+            <button type="button" aria-pressed="false" aria-label="Concesionaria"></button>
+            <button type="button" aria-pressed="false" aria-label="Tienda online"></button>
+          </div>
+          <button type="button" class="demos__arrow" data-dir="1" aria-label="Demo siguiente">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+          </button>
         </div>
       </div>
     </section>

@@ -130,4 +130,85 @@
     dots.forEach((d, i) => d.addEventListener('click', () => { show(i); start(); }));
     start();
   }
+
+  /* ---------- Carrusel de ejemplos en cilindro ---------- */
+  const track = document.querySelector('.demos__track');
+  if (track) {
+    const cards = [...track.querySelectorAll('.demo')];
+    const dots = [...document.querySelectorAll('.demos__dots button')];
+    const [prev, next] = document.querySelectorAll('.demos__arrow');
+    const STEP = 34; // grados entre una card y la siguiente sobre el cilindro
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let active = -1;
+    let frame = 0;
+
+    const setActive = (i) => {
+      if (i === active) return;
+      active = i;
+      cards.forEach((c, j) => c.classList.toggle('is-active', j === i));
+      dots.forEach((d, j) => {
+        d.classList.toggle('is-active', j === i);
+        d.setAttribute('aria-pressed', String(j === i));
+      });
+      prev.disabled = i === 0;
+      next.disabled = i === cards.length - 1;
+    };
+
+    // Cada card se ubica sobre un cilindro de eje vertical: la posición plana del
+    // scroll se convierte en un ángulo, y de ahí sale cuánto rota y cuánto se aleja.
+    const render = () => {
+      frame = 0;
+      const spacing = cards[0].offsetWidth + parseFloat(getComputedStyle(track).columnGap || 0);
+      const radius = spacing / (STEP * Math.PI / 180);
+      const center = track.scrollLeft + track.clientWidth / 2;
+      let nearest = 0;
+      let min = Infinity;
+
+      cards.forEach((card, i) => {
+        const d = (card.offsetLeft + card.offsetWidth / 2 - center) / spacing;
+        const angle = Math.max(-90, Math.min(90, d * STEP));
+        const rad = angle * Math.PI / 180;
+        const x = radius * Math.sin(rad) - d * spacing;
+        const z = radius * (Math.cos(rad) - 1);
+        card.style.transform = `translate3d(${x}px, 0, ${z}px) rotateY(${angle}deg)`;
+        card.style.opacity = String(1 - Math.min(Math.abs(d), 2) * 0.3);
+        if (Math.abs(d) < min) { min = Math.abs(d); nearest = i; }
+      });
+      setActive(nearest);
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(render); };
+
+    const go = (i) => {
+      const card = cards[Math.max(0, Math.min(cards.length - 1, i))];
+      track.scrollTo({
+        left: card.offsetLeft + card.offsetWidth / 2 - track.clientWidth / 2,
+        behavior: reduce ? 'auto' : 'smooth',
+      });
+    };
+
+    // Tocar una card lateral la trae al frente en lugar de abrir su link
+    cards.forEach((card, i) => {
+      card.addEventListener('click', (e) => {
+        if (i === active) return;
+        e.preventDefault();
+        e.stopPropagation();
+        go(i);
+      }, true);
+      card.addEventListener('focusin', () => { if (i !== active) go(i); });
+    });
+    dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
+    prev.addEventListener('click', () => go(active - 1));
+    next.addEventListener('click', () => go(active + 1));
+    track.addEventListener('keydown', (e) => {
+      if (e.target !== track) return;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        go(active + (e.key === 'ArrowRight' ? 1 : -1));
+      }
+    });
+
+    track.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    render();
+  }
 })();
