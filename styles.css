@@ -723,29 +723,6 @@ p { margin: 0; }
 .step h3 { font-size: 1.02rem; font-weight: 600; margin-bottom: 8px; }
 .step p { font-size: 0.9rem; color: var(--color-gris); }
 
-/* ---------- Banda CTA ---------- */
-.cta-band {
-  background: var(--color-oscuro);
-  color: var(--color-sobre-oscuro-suave);
-  padding: clamp(56px, 8vw, 88px) 0;
-}
-.cta-band__inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 32px;
-  flex-wrap: wrap;
-}
-.cta-band__title {
-  font-family: var(--font-titulo);
-  font-weight: 400;
-  font-size: clamp(1.75rem, 3.4vw, 2.4rem);
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-  color: var(--color-sobre-oscuro);
-  margin-bottom: 8px;
-}
-
 /* ---------- FAQ ---------- */
 .faq-layout {
   display: grid;
@@ -972,7 +949,6 @@ p { margin: 0; }
   .float-card__msg { font-size: 0.74rem; }
   .phone { border-radius: 20px; padding: 5px; }
   .phone__screen { border-radius: 16px; }
-  .cta-band__inner .btn { width: 100%; }
   .demos__track { mask-image: none; }
   .faq details p { padding-right: 0; }
 }
