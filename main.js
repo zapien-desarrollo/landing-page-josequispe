@@ -134,11 +134,25 @@
   /* ---------- Carrusel de ejemplos en cilindro ---------- */
   const track = document.querySelector('.demos__track');
   if (track) {
+    const originals = [...track.querySelectorAll('.demo')];
+    // Se duplica la tanda para cerrar la vuelta: la card que sale por un lado
+    // reaparece por el otro pasando por detrás del cilindro, donde no se ve.
+    originals.forEach((card) => {
+      const clone = card.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      clone.querySelectorAll('a').forEach((a) => a.setAttribute('tabindex', '-1'));
+      track.append(clone);
+    });
     const cards = [...track.querySelectorAll('.demo')];
+    const total = cards.length;
     const dots = [...document.querySelectorAll('.demos__dots button')];
     const [prev, next] = document.querySelectorAll('.demos__arrow');
     const STEP = 34; // grados entre una card y la siguiente sobre el cilindro
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const EASE = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 0.09;
+    const mod = (a, n) => ((a % n) + n) % n;
+
+    let pos = 0;    // posición actual, en cards (no se acota: el cilindro da vueltas)
+    let target = 0; // posición hacia la que se desliza
     let active = -1;
     let frame = 0;
 
@@ -147,68 +161,122 @@
       active = i;
       cards.forEach((c, j) => c.classList.toggle('is-active', j === i));
       dots.forEach((d, j) => {
-        d.classList.toggle('is-active', j === i);
-        d.setAttribute('aria-pressed', String(j === i));
+        d.classList.toggle('is-active', j === i % originals.length);
+        d.setAttribute('aria-pressed', String(j === i % originals.length));
       });
-      prev.disabled = i === 0;
-      next.disabled = i === cards.length - 1;
     };
 
-    // Cada card se ubica sobre un cilindro de eje vertical: la posición plana del
-    // scroll se convierte en un ángulo, y de ahí sale cuánto rota y cuánto se aleja.
     const render = () => {
-      frame = 0;
-      const spacing = cards[0].offsetWidth + parseFloat(getComputedStyle(track).columnGap || 0);
-      const radius = spacing / (STEP * Math.PI / 180);
-      const center = track.scrollLeft + track.clientWidth / 2;
-      let nearest = 0;
-      let min = Infinity;
-
+      const radius = cards[0].offsetWidth / (STEP * Math.PI / 180);
       cards.forEach((card, i) => {
-        const d = (card.offsetLeft + card.offsetWidth / 2 - center) / spacing;
-        const angle = Math.max(-90, Math.min(90, d * STEP));
+        const d = mod(i - pos + total / 2, total) - total / 2;
+        const angle = d * STEP;
         const rad = angle * Math.PI / 180;
-        const x = radius * Math.sin(rad) - d * spacing;
+        const x = radius * Math.sin(rad);
         const z = radius * (Math.cos(rad) - 1);
         card.style.transform = `translate3d(${x}px, 0, ${z}px) rotateY(${angle}deg)`;
-        card.style.opacity = String(1 - Math.min(Math.abs(d), 2) * 0.3);
-        if (Math.abs(d) < min) { min = Math.abs(d); nearest = i; }
+        card.style.opacity = String(1 - Math.min(Math.abs(d), 1) * 0.8);
+        card.style.visibility = Math.abs(angle) > 100 ? 'hidden' : '';
       });
-      setActive(nearest);
+      setActive(mod(Math.round(pos), total));
     };
-    const schedule = () => { if (!frame) frame = requestAnimationFrame(render); };
+
+    // Se acerca a la posición destino un poco en cada cuadro: frena suave al llegar
+    const tick = () => {
+      pos += (target - pos) * EASE;
+      if (Math.abs(target - pos) < 0.0005) pos = target;
+      render();
+      frame = pos !== target || dragging ? requestAnimationFrame(tick) : 0;
+    };
+    const animate = () => { if (!frame) frame = requestAnimationFrame(tick); };
 
     const go = (i) => {
-      const card = cards[Math.max(0, Math.min(cards.length - 1, i))];
-      track.scrollTo({
-        left: card.offsetLeft + card.offsetWidth / 2 - track.clientWidth / 2,
-        behavior: reduce ? 'auto' : 'smooth',
-      });
+      // Va hacia la copia más cercana de esa card, sin dar la vuelta larga
+      const n = originals.length;
+      target = Math.round(target) + mod(i - Math.round(target) + n / 2, n) - n / 2;
+      animate();
     };
 
-    // Tocar una card lateral la trae al frente en lugar de abrir su link
+    /* Arrastre con inercia (mouse y touch); el scroll vertical sigue siendo de la página */
+    let dragging = false;
+    let moved = false;
+    let startX = 0, startY = 0, startPos = 0, lastX = 0, lastT = 0, velocity = 0;
+
+    track.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      startX = lastX = e.clientX;
+      startY = e.clientY;
+      startPos = pos;
+      lastT = e.timeStamp;
+      velocity = 0;
+      moved = false;
+      dragging = true;
+    });
+    track.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - startX;
+      if (!moved) {
+        if (Math.abs(e.clientY - startY) > Math.abs(dx) && Math.abs(e.clientY - startY) > 6) { dragging = false; return; }
+        if (Math.abs(dx) < 6) return;
+        moved = true;
+        track.setPointerCapture(e.pointerId);
+        track.classList.add('is-dragging');
+      }
+      const width = cards[0].offsetWidth;
+      const dt = Math.max(1, e.timeStamp - lastT);
+      velocity = 0.8 * velocity + 0.2 * (-(e.clientX - lastX) / width / dt);
+      lastX = e.clientX;
+      lastT = e.timeStamp;
+      pos = target = startPos - dx / width;
+      animate();
+    });
+    const release = () => {
+      if (!dragging) return;
+      dragging = false;
+      track.classList.remove('is-dragging');
+      if (!moved) return;
+      setTimeout(() => { moved = false; }); // después del click que dispara soltar
+      // Un gesto rápido avanza más de una card, como si girara por impulso
+      const fling = Math.max(-2, Math.min(2, velocity * 220));
+      target = Math.round(pos + fling);
+      animate();
+    };
+    track.addEventListener('pointerup', release);
+    track.addEventListener('pointercancel', release);
+
+    // Trackpad / rueda horizontal: desliza libre y se acomoda en la card más cercana
+    let wheelTimer;
+    track.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+      e.preventDefault();
+      target += e.deltaX / cards[0].offsetWidth;
+      clearTimeout(wheelTimer);
+      wheelTimer = setTimeout(() => { target = Math.round(target); animate(); }, 140);
+      animate();
+    }, { passive: false });
+
+    // Tocar una card lateral la trae al frente; después de arrastrar no se abre ningún link
     cards.forEach((card, i) => {
       card.addEventListener('click', (e) => {
-        if (i === active) return;
-        e.preventDefault();
-        e.stopPropagation();
-        go(i);
+        if (moved || i !== active) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!moved) go(i);
+        }
       }, true);
       card.addEventListener('focusin', () => { if (i !== active) go(i); });
     });
     dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
-    prev.addEventListener('click', () => go(active - 1));
-    next.addEventListener('click', () => go(active + 1));
+    prev.addEventListener('click', () => { target = Math.round(target) - 1; animate(); });
+    next.addEventListener('click', () => { target = Math.round(target) + 1; animate(); });
     track.addEventListener('keydown', (e) => {
-      if (e.target !== track) return;
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-        e.preventDefault();
-        go(active + (e.key === 'ArrowRight' ? 1 : -1));
-      }
+      if (e.target !== track || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return;
+      e.preventDefault();
+      target = Math.round(target) + (e.key === 'ArrowRight' ? 1 : -1);
+      animate();
     });
 
-    track.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule);
+    window.addEventListener('resize', render);
     render();
   }
 })();

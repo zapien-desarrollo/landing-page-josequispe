@@ -403,32 +403,6 @@ p { margin: 0; }
   50% { transform: translateY(-10px); }
 }
 
-/* Franja de confianza */
-.trust {
-  list-style: none;
-  margin-top: clamp(48px, 8vh, 80px);
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-}
-.trust li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding-top: 18px;
-  border-top: 1px solid var(--color-linea);
-  font-size: 0.86rem;
-  font-weight: 500;
-  color: var(--color-tinta);
-}
-.trust li::before {
-  content: '';
-  flex: none;
-  width: 18px; height: 18px;
-  border-radius: 50%;
-  background: var(--color-acento) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / 11px no-repeat;
-}
-
 /* Animación de entrada del hero */
 .load-in {
   animation: load-in 0.9s var(--ease) both;
@@ -437,7 +411,6 @@ p { margin: 0; }
 .hero__content .load-in:nth-child(3) { animation-delay: 0.16s; }
 .hero__content .load-in:nth-child(4) { animation-delay: 0.24s; }
 .hero__visual.load-in { animation-delay: 0.2s; }
-.trust.load-in { animation-delay: 0.4s; }
 @keyframes load-in {
   from { opacity: 0; transform: translateY(20px); }
 }
@@ -602,28 +575,28 @@ p { margin: 0; }
 }
 
 /* ---------- Ejemplos (carrusel en cilindro) ---------- */
-.demos { --card-w: min(380px, 78vw); --gap: 24px; }
+.demos { --card-w: min(475px, 86vw); }
+/* Todas las cards se apilan en la misma celda; main.js las reparte sobre el cilindro */
 .demos__track {
-  display: flex;
-  gap: var(--gap);
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  /* Margen para que la primera y la última card puedan quedar centradas */
-  padding: 24px calc(50% - var(--card-w) / 2) 40px;
-  position: relative;
-  perspective: 1400px;
+  display: grid;
+  justify-content: center;
+  padding: 24px 0 40px;
+  overflow: hidden;
+  perspective: 1600px;
+  touch-action: pan-y;
+  user-select: none;
+  cursor: grab;
   /* Bordes difuminados: refuerza la sensación de que las cards giran hacia atrás */
   mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
   outline: none;
 }
-.demos__track::-webkit-scrollbar { display: none; }
+.demos__track.is-dragging { cursor: grabbing; }
 .demos__track:focus-visible { box-shadow: inset 0 0 0 2px var(--color-dorado); border-radius: var(--radius); }
+.demos__track img { -webkit-user-drag: none; }
 
 .demo {
-  flex: 0 0 var(--card-w);
-  scroll-snap-align: center;
+  grid-area: 1 / 1;
+  width: var(--card-w);
   display: flex;
   flex-direction: column;
   border-radius: var(--radius);
@@ -631,9 +604,8 @@ p { margin: 0; }
   background: var(--color-superficie);
   box-shadow: var(--shadow);
   overflow: hidden;
-  transform-origin: 50% 50%;
   backface-visibility: hidden;
-  will-change: transform;
+  will-change: transform, opacity;
 }
 /* Las cards laterales se tocan para traerlas al frente, no para navegar */
 .demo:not(.is-active) { cursor: pointer; }
@@ -701,8 +673,7 @@ p { margin: 0; }
   cursor: pointer;
   transition: background 0.25s, color 0.25s, opacity 0.25s;
 }
-.demos__arrow:hover:not(:disabled) { background: var(--color-tinta); color: var(--color-superficie); }
-.demos__arrow:disabled { opacity: 0.35; cursor: default; }
+.demos__arrow:hover { background: var(--color-tinta); color: var(--color-superficie); }
 .demos__arrow svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .demos__dots { display: flex; gap: 6px; }
 .demos__dots button {
@@ -964,7 +935,6 @@ p { margin: 0; }
   .hero__visual { max-width: 520px; width: 100%; margin-inline: auto; }
   .services { grid-template-columns: repeat(2, 1fr); }
   .features { grid-template-columns: repeat(2, 1fr); }
-  .trust { grid-template-columns: repeat(2, 1fr); }
   .faq-layout,
   .contact { grid-template-columns: 1fr; }
   .faq-layout .section__head { position: static; }
@@ -994,7 +964,6 @@ p { margin: 0; }
   .services,
   .features,
   .steps,
-  .trust,
   .form__grid { grid-template-columns: 1fr; }
   .hero__actions .btn { flex: 1 1 100%; }
   .showcase { padding-right: 18px; }
@@ -1004,7 +973,6 @@ p { margin: 0; }
   .phone { border-radius: 20px; padding: 5px; }
   .phone__screen { border-radius: 16px; }
   .cta-band__inner .btn { width: 100%; }
-  .demos { --gap: 14px; }
   .demos__track { mask-image: none; }
   .faq details p { padding-right: 0; }
 }
