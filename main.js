@@ -52,6 +52,27 @@
     sections.forEach((s) => spy.observe(s));
   }
 
+  /* ---------- Aparición al hacer scroll ---------- */
+  const reveals = document.querySelectorAll('.reveal');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if ('IntersectionObserver' in window && reveals.length && !reduceMotion) {
+    document.documentElement.classList.add('js-reveal');
+    const revealer = new IntersectionObserver(
+      (entries) => {
+        // Los que entran juntos (ej. una grilla de tarjetas) aparecen escalonados
+        entries
+          .filter((e) => e.isIntersecting)
+          .forEach((e, i) => {
+            e.target.style.setProperty('--reveal-delay', `${i * 90}ms`);
+            e.target.classList.add('is-visible');
+            revealer.unobserve(e.target);
+          });
+      },
+      { rootMargin: '0px 0px -10% 0px', threshold: 0.1 }
+    );
+    reveals.forEach((el) => revealer.observe(el));
+  }
+
   /* ---------- Formulario → mensaje de WhatsApp ---------- */
   const form = document.getElementById('contact-form');
   if (form) {
